@@ -83,19 +83,27 @@ fun CircleScreen() {
             trips
         )
 
+        var isMember by remember {
+            mutableStateOf(false)
+        }
+
         LazyColumn(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(circles) { circle ->
-                CircleCard(circle)
+                CircleCard(circle = circle,
+                    isMember = isMember,
+                    onJoin = {
+                        isMember = true
+                    })
             }
         }
     }
 }
 
 @Composable
-fun CircleCard(circle: Circle) {
+fun CircleCard(circle: Circle, isMember: Boolean, onJoin: () -> Unit) {
     Card {
         Column (
             modifier = Modifier.padding(16.dp)
@@ -117,10 +125,19 @@ fun CircleCard(circle: Circle) {
 
             Button(
                 onClick = {
-                    memberCount += 1
+                    if (!isMember) {
+                        onJoin()
+                        memberCount += 1
+                    }
                 }
             ) {
-                Text("Join Circle")
+                Text(
+                    if (isMember) {
+                        "Joined"
+                    } else {
+                        "Join Circle"
+                    }
+                )
             }
         }
     }
